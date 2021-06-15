@@ -15,6 +15,9 @@ export class Tags {
   @Field(() => String)
   @Prop()
   userId: MongooseSchema.Types.ObjectId;
+
+  @Field(() => String)
+  createdAt: string;
 }
 
 export type TagsDocument = Tags & Document;

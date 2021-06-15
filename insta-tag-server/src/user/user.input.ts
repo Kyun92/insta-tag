@@ -9,6 +9,9 @@ export class CreateUserInput {
 
   @Field(() => String)
   password: string;
+
+  @Field()
+  createdAt: string = new Date().toISOString();
 }
 
 @InputType()

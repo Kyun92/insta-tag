@@ -8,6 +8,9 @@ export class CreateTagInput {
 
   @Field(() => String)
   userId: MongooseSchema.Types.ObjectId;
+
+  @Field()
+  createdAt: string = new Date().toISOString();
 }
 
 @InputType()

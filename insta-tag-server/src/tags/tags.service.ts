@@ -2,18 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { GraphQLError } from 'graphql';
 import { Model, Schema as MongooseSchema } from 'mongoose';
+import { UserService } from 'src/user/user.service';
 import { Tags, TagsDocument } from './tags.entity';
 import { CreateTagInput, ListTagsInput, UpdateTagInput } from './tags.input';
 
 @Injectable()
 export class TagsService {
-  constructor(@InjectModel(Tags.name) private tagsModel: Model<TagsDocument>) {}
+  constructor(
+    @InjectModel(Tags.name) private tagsModel: Model<TagsDocument>,
+    private userService: UserService,
+  ) {}
 
   async createTags(createTagsInput: CreateTagInput) {
-    try {
+    const isUser = await this.userService.getUserById(createTagsInput.userId);
+    if (isUser) {
       return await new this.tagsModel(createTagsInput).save();
-    } catch (err) {
-      console.error(err);
+    } else {
+      throw new GraphQLError('No User this _id');
     }
   }
 

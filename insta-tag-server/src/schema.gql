@@ -3,11 +3,13 @@
 # ------------------------------------------------------
 
 input CreateTagInput {
+  createdAt: String = "2021-06-15T07:51:09.805Z"
   tagList: [String!]
   userId: String!
 }
 
 input CreateUserInput {
+  createdAt: String = "2021-06-15T07:51:09.804Z"
   email: String!
   password: String!
 }
@@ -39,6 +41,7 @@ type Query {
 
 type Tags {
   _id: String!
+  createdAt: String!
   tagList: [String!]!
   userId: String!
 }
