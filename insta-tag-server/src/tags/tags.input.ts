@@ -1,7 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { Prop } from '@nestjs/mongoose';
 import { Schema as MongooseSchema } from 'mongoose';
-import { Tags } from './tags.entity';
 
 @InputType()
 export class CreateTagInput {
@@ -19,6 +17,15 @@ export class ListTagsInput {
 
   @Field(() => String)
   userId: MongooseSchema.Types.ObjectId;
+
+  @Field(() => [String])
+  tagList: string[];
+}
+
+@InputType()
+export class UpdateTagInput {
+  @Field(() => String)
+  _id: MongooseSchema.Types.ObjectId;
 
   @Field(() => [String])
   tagList: string[];

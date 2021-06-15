@@ -2,6 +2,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { User } from './user.entity';
 import { CreateUserInput, ListUserInput } from './user.input';
 import { UserService } from './user.service';
+import { Schema as MongooseSchema } from 'mongoose';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -12,7 +13,20 @@ export class UserResolver {
   async findAllUsers(
     @Args('filters', { nullable: true }) filters?: ListUserInput,
   ) {
-    return this.userService.findAll(filters);
+    return this.userService.findAllUser(filters);
+  }
+
+  // Get By Id
+  @Query(() => User, { nullable: true })
+  async getUserById(
+    @Args('_id', { type: () => String })
+    _id: MongooseSchema.Types.ObjectId,
+  ) {
+    try {
+      return await this.userService.getUserById(_id);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   // Create User

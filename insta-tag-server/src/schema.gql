@@ -21,17 +21,20 @@ input ListTagsInput {
 input ListUserInput {
   _id: String!
   email: String!
-  tags: [String!]
 }
 
 type Mutation {
   createTags(createTagsInput: CreateTagInput!): Tags!
   createUser(createUserInput: CreateUserInput!): User!
+  deleteTag(_id: String!): Tags!
+  updateTag(updateTagInput: UpdateTagInput!): Tags!
 }
 
 type Query {
   findAllTags(filter: ListTagsInput): [Tags!]!
   findAllUsers(filters: ListUserInput): [User!]!
+  getTagsById(userId: String): [Tags!]!
+  getUserById(_id: String!): User
 }
 
 type Tags {
@@ -40,10 +43,14 @@ type Tags {
   userId: String!
 }
 
+input UpdateTagInput {
+  _id: String!
+  tagList: [String!]!
+}
+
 type User {
   _id: String!
   createdAt: String!
   email: String!
   password: String!
-  tags: [Tags!]!
 }

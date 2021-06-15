@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { GraphQLError } from 'graphql';
-import { Model } from 'mongoose';
+import { Model, Schema as MongooseSchema } from 'mongoose';
 import { User, UserDocument } from './user.entity';
 import { CreateUserInput, ListUserInput } from './user.input';
 
@@ -20,9 +20,17 @@ export class UserService {
     }
   }
 
-  async findAll(filters?: ListUserInput) {
+  async findAllUser(filters?: ListUserInput) {
     try {
       return await this.userModal.find({ ...filters }).exec();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async getUserById(_id: MongooseSchema.Types.ObjectId) {
+    try {
+      return await this.userModal.findById(_id).exec();
     } catch (err) {
       console.error(err);
     }
