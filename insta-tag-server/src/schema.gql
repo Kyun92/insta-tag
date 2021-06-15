@@ -1,0 +1,49 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateTagInput {
+  tagList: [String!]
+  userId: String!
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
+}
+
+input ListTagsInput {
+  _id: String!
+  tagList: [String!]!
+  userId: String!
+}
+
+input ListUserInput {
+  _id: String!
+  email: String!
+  tags: [String!]
+}
+
+type Mutation {
+  createTags(createTagsInput: CreateTagInput!): Tags!
+  createUser(createUserInput: CreateUserInput!): User!
+}
+
+type Query {
+  findAllTags(filter: ListTagsInput): [Tags!]!
+  findAllUsers(filters: ListUserInput): [User!]!
+}
+
+type Tags {
+  _id: String!
+  tagList: [String!]!
+  userId: String!
+}
+
+type User {
+  _id: String!
+  createdAt: String!
+  email: String!
+  password: String!
+  tags: [Tags!]!
+}
