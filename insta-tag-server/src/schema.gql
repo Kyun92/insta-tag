@@ -3,13 +3,13 @@
 # ------------------------------------------------------
 
 input CreateTagInput {
-  createdAt: String = "2021-06-15T13:47:45.279Z"
-  tagList: [String!]
+  createdAt: String = "2021-06-17T00:17:27.766Z"
+  tagList: [String!]!
   userId: String!
 }
 
 input CreateUserInput {
-  createdAt: String = "2021-06-15T13:47:45.279Z"
+  createdAt: String = "2021-06-17T00:17:27.766Z"
   email: String!
   password: String!
 }
@@ -23,6 +23,7 @@ input ListTagsInput {
 input ListUserInput {
   _id: String!
   email: String!
+  tags: [String!]
 }
 
 type Mutation {
@@ -30,6 +31,7 @@ type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   deleteTag(_id: String!): Tags!
   updateTag(updateTagInput: UpdateTagInput!): Tags!
+  updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
 type Query {
@@ -51,9 +53,15 @@ input UpdateTagInput {
   tagList: [String!]!
 }
 
+input UpdateUserInput {
+  _id: String!
+  tags: [String!]
+}
+
 type User {
   _id: String!
   createdAt: String!
   email: String!
   password: String!
+  tags(populate: Boolean!): [Tags!]
 }

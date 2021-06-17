@@ -5,7 +5,6 @@ import { Model, Schema as MongooseSchema } from 'mongoose';
 import { UserService } from 'src/user/user.service';
 import { Tags, TagsDocument } from './tags.entity';
 import { CreateTagInput, ListTagsInput, UpdateTagInput } from './tags.input';
-import _ from 'lodash';
 
 @Injectable()
 export class TagsService {
@@ -17,14 +16,20 @@ export class TagsService {
   async createTags(createTagsInput: CreateTagInput) {
     const isUser = await this.userService.getUserById(createTagsInput.userId);
 
-    //Todo Tag 추가 할 때 User에 push 해서 넣어주기
     if (isUser) {
       const newTag = await new this.tagsModel(createTagsInput);
-      const newTagId = newTag._id;
+      const newTagId = newTag._id as MongooseSchema.Types.ObjectId;
       if (newTagId) {
-        // Todo user Update 추가 되면 처리하기
+        const userTags = isUser.tags as MongooseSchema.Types.ObjectId[];
+        const tagsArr =
+          userTags.length === 0 ? [newTagId] : userTags.concat(newTagId);
+
+        await this.userService.updateUser({
+          _id: isUser.id,
+          tags: tagsArr as MongooseSchema.Types.ObjectId[],
+        });
       }
-      return await new this.tagsModel(createTagsInput).save();
+      return await newTag.save();
     } else {
       throw new GraphQLError('No User this _id');
     }
@@ -55,9 +60,6 @@ export class TagsService {
       const isTag = await this.tagsModel.findOne({
         _id: updateTagInput._id,
       });
-      //? 이게 되네???
-      //? 수정 전의 모델이 들어온다 이걸 받아서 userUpdate에 던져주면 될 듯?
-      console.log('### isTag', isTag.tagList);
 
       if (isTag) {
         return await this.tagsModel

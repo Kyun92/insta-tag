@@ -3,7 +3,7 @@ import { Schema as MongooseSchema } from 'mongoose';
 
 @InputType()
 export class CreateTagInput {
-  @Field(() => [String], { nullable: true })
+  @Field(() => [String])
   tagList: string[];
 
   @Field(() => String)

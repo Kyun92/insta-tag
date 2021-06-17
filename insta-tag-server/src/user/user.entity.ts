@@ -21,9 +21,9 @@ export class User {
   @Prop()
   createdAt: string;
 
-  @Field(() => [Tags])
+  @Field(() => [Tags], { nullable: true })
   @Prop({ type: [MongooseSchema.Types.ObjectId], ref: Tags.name })
-  tags?: MongooseSchema.Types.ObjectId[];
+  tags?: MongooseSchema.Types.ObjectId[] | Tags[];
 }
 
 export type UserDocument = User & Document;

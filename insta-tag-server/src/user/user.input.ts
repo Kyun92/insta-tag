@@ -1,7 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { Schema as MongooseSchema } from 'mongoose';
-import { Tags } from 'src/tags/tags.entity';
-// import { Tags } from 'src/tags/tags.entity';
 
 @InputType()
 export class CreateUserInput {
@@ -23,8 +21,8 @@ export class ListUserInput {
   @Field(() => String)
   email: string;
 
-  // @Field(() => [String], { nullable: true })
-  // tags?: MongooseSchema.Types.ObjectId[];
+  @Field(() => [String], { nullable: true })
+  tags?: MongooseSchema.Types.ObjectId[];
 }
 
 @InputType()
@@ -32,5 +30,6 @@ export class UpdateUserInput {
   @Field(() => String)
   _id: MongooseSchema.Types.ObjectId;
 
-  // @Field(() => ) {}
+  @Field(() => [String], { nullable: true })
+  tags?: MongooseSchema.Types.ObjectId[];
 }

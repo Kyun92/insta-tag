@@ -3,8 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { GraphQLError } from 'graphql';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { TagsDocument } from 'src/tags/tags.entity';
+import { UpdateTagInput } from 'src/tags/tags.input';
 import { User, UserDocument } from './user.entity';
-import { CreateUserInput, ListUserInput } from './user.input';
+import { CreateUserInput, ListUserInput, UpdateUserInput } from './user.input';
 
 @Injectable()
 export class UserService {
@@ -52,7 +53,16 @@ export class UserService {
     }
   }
 
-  // async updateUser() {}
+  async updateUser(updateUserInput: UpdateUserInput) {
+    try {
+      console.log('updateUserInput', updateUserInput);
+      return await this.userModel
+        .findByIdAndUpdate(updateUserInput._id, updateUserInput, { new: true })
+        .exec();
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   // Todo Update 추가
 }

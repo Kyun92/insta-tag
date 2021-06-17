@@ -1,8 +1,17 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { User } from './user.entity';
-import { CreateUserInput, ListUserInput } from './user.input';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
+import { User, UserDocument } from './user.entity';
+import { CreateUserInput, ListUserInput, UpdateUserInput } from './user.input';
 import { UserService } from './user.service';
 import { Schema as MongooseSchema } from 'mongoose';
+import { GraphQLError } from 'graphql';
+import { Tags } from 'src/tags/tags.entity';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -25,7 +34,7 @@ export class UserResolver {
     try {
       return await this.userService.getUserById(_id);
     } catch (err) {
-      console.error(err);
+      throw new GraphQLError('User email already exist');
     }
   }
 
@@ -37,5 +46,27 @@ export class UserResolver {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  // Update User
+  @Mutation(() => User)
+  async updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
+    try {
+      console.log('updateUserInput Mutaion', updateUserInput);
+      return await this.userService.updateUser(updateUserInput);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  @ResolveField()
+  async tags(
+    @Parent() user: UserDocument,
+    @Args('populate') populate: boolean,
+  ) {
+    if (populate) {
+      await user.populate({ path: 'tags', model: Tags.name }).execPopulate();
+    }
+    return user.tags;
   }
 }
