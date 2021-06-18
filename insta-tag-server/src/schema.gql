@@ -3,13 +3,13 @@
 # ------------------------------------------------------
 
 input CreateTagInput {
-  createdAt: String = "2021-06-17T00:17:27.766Z"
+  createdAt: String = "2021-06-18T04:32:16.543Z"
   tagList: [String!]!
   userId: String!
 }
 
 input CreateUserInput {
-  createdAt: String = "2021-06-17T00:17:27.766Z"
+  createdAt: String = "2021-06-18T04:32:16.543Z"
   email: String!
   password: String!
 }
@@ -30,6 +30,7 @@ type Mutation {
   createTags(createTagsInput: CreateTagInput!): Tags!
   createUser(createUserInput: CreateUserInput!): User!
   deleteTag(_id: String!): Tags!
+  login(email: String!, password: String!): String!
   updateTag(updateTagInput: UpdateTagInput!): Tags!
   updateUser(updateUserInput: UpdateUserInput!): User!
 }

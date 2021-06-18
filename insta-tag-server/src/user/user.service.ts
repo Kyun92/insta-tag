@@ -6,13 +6,17 @@ import { TagsDocument } from 'src/tags/tags.entity';
 import { UpdateTagInput } from 'src/tags/tags.input';
 import { User, UserDocument } from './user.entity';
 import { CreateUserInput, ListUserInput, UpdateUserInput } from './user.input';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>, // private tagsModel: Model<TagsDocument>,
+    private jwtService: JwtService,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
+  // Createa User
   async createUser(createUserInput: CreateUserInput) {
     const isUser = await this.userModel.findOne({
       email: createUserInput.email,
@@ -20,7 +24,23 @@ export class UserService {
     if (isUser) {
       throw new GraphQLError('User email already exist');
     } else {
+      createUserInput.password = await bcrypt
+        .hash(createUserInput.password, 10)
+        .then((r) => r);
       return await new this.userModel(createUserInput).save();
+    }
+  }
+
+  // Login User
+  async login({ password, email }) {
+    try {
+      const user = await this.userModel.findOne({ email });
+
+      return user && (await bcrypt.compare(password, user.password))
+        ? this.jwtService.signAsync({ email, _id: user._id })
+        : new GraphQLError('Wrong password/email');
+    } catch (err) {
+      console.error(err);
     }
   }
 
@@ -63,6 +83,4 @@ export class UserService {
       console.error(err);
     }
   }
-
-  // Todo Update 추가
 }

@@ -12,6 +12,9 @@ import { UserService } from './user.service';
 import { Schema as MongooseSchema } from 'mongoose';
 import { GraphQLError } from 'graphql';
 import { Tags } from 'src/tags/tags.entity';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from './user.guard';
+import { CurrentUser } from './user.decorator';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -27,6 +30,7 @@ export class UserResolver {
 
   // Get By Id
   @Query(() => User, { nullable: true })
+  @UseGuards(GqlAuthGuard)
   async getUserById(
     @Args('_id', { type: () => String })
     _id: MongooseSchema.Types.ObjectId,
@@ -48,11 +52,27 @@ export class UserResolver {
     }
   }
 
+  // Login
+  @Mutation(() => String)
+  async login(
+    @Args('email') email: string,
+    @Args('password') password: string,
+  ) {
+    try {
+      return await this.userService.login({ email, password });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   // Update User
   @Mutation(() => User)
-  async updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
+  @UseGuards(GqlAuthGuard)
+  async updateUser(
+    @CurrentUser() user: User,
+    @Args('updateUserInput') updateUserInput: UpdateUserInput,
+  ) {
     try {
-      console.log('updateUserInput Mutaion', updateUserInput);
       return await this.userService.updateUser(updateUserInput);
     } catch (err) {
       console.error(err);
