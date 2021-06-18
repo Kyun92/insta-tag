@@ -24,7 +24,7 @@ export class TagsService {
         const tagsArr =
           userTags.length === 0 ? [newTagId] : userTags.concat(newTagId);
 
-        await this.userService.updateUser({
+        await this.userService.updateUser(isUser.id, {
           _id: isUser.id,
           tags: tagsArr as MongooseSchema.Types.ObjectId[],
         });

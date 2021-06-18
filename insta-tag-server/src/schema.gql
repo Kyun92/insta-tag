@@ -3,13 +3,13 @@
 # ------------------------------------------------------
 
 input CreateTagInput {
-  createdAt: String = "2021-06-18T04:32:16.543Z"
+  createdAt: String = "2021-06-18T15:04:52.059Z"
   tagList: [String!]!
   userId: String!
 }
 
 input CreateUserInput {
-  createdAt: String = "2021-06-18T04:32:16.543Z"
+  createdAt: String = "2021-06-18T15:04:52.059Z"
   email: String!
   password: String!
 }

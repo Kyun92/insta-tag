@@ -73,7 +73,7 @@ export class UserResolver {
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
   ) {
     try {
-      return await this.userService.updateUser(updateUserInput);
+      return await this.userService.updateUser(user._id, updateUserInput);
     } catch (err) {
       console.error(err);
     }

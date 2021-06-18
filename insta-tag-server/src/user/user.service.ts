@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { GraphQLError } from 'graphql';
 import { Model, Schema as MongooseSchema } from 'mongoose';
-import { TagsDocument } from 'src/tags/tags.entity';
-import { UpdateTagInput } from 'src/tags/tags.input';
 import { User, UserDocument } from './user.entity';
 import { CreateUserInput, ListUserInput, UpdateUserInput } from './user.input';
 import * as bcrypt from 'bcrypt';
@@ -73,11 +71,14 @@ export class UserService {
     }
   }
 
-  async updateUser(updateUserInput: UpdateUserInput) {
+  async updateUser(
+    _id: MongooseSchema.Types.ObjectId,
+    updateUserInput: UpdateUserInput,
+  ) {
     try {
       console.log('updateUserInput', updateUserInput);
       return await this.userModel
-        .findByIdAndUpdate(updateUserInput._id, updateUserInput, { new: true })
+        .findByIdAndUpdate(_id, updateUserInput, { new: true })
         .exec();
     } catch (err) {
       console.error(err);
