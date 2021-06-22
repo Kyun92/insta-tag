@@ -35,7 +35,7 @@ export class UserService {
       const user = await this.userModel.findOne({ email });
 
       return user && (await bcrypt.compare(password, user.password))
-        ? this.jwtService.signAsync({ email, _id: user._id })
+        ? await this.jwtService.signAsync({ email, _id: user._id })
         : new GraphQLError('Wrong password/email');
     } catch (err) {
       console.error(err);
@@ -76,7 +76,6 @@ export class UserService {
     updateUserInput: UpdateUserInput,
   ) {
     try {
-      console.log('updateUserInput', updateUserInput);
       return await this.userModel
         .findByIdAndUpdate(_id, updateUserInput, { new: true })
         .exec();

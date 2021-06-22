@@ -3,8 +3,6 @@ import { Tags } from './tags.entity';
 import { CreateTagInput, ListTagsInput, UpdateTagInput } from './tags.input';
 import { TagsService } from './tags.service';
 import { Schema as MongooseSchema } from 'mongoose';
-import { UserService } from 'src/user/user.service';
-import { GraphQLError } from 'graphql';
 
 @Resolver(() => Tags)
 export class TagsResolver {
