@@ -1,0 +1,11 @@
+
+
+{
+  "user": {
+    "_id": "ASDdqwewq",
+    "email": "lsk9105@gmail.com",
+    "tags": ["tagId_1", "tagId_2"],
+    "feeds": ["feedId_1", "feedId_2"]
+  }
+}
+

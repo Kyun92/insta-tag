@@ -19,6 +19,7 @@ export class TagsService {
     if (isUser) {
       const newTag = await new this.tagsModel(createTagsInput);
       const newTagId = newTag._id as MongooseSchema.Types.ObjectId;
+      //? 이 부분을 UserGuards로 대채할 수 있지 않을까?
       if (newTagId) {
         const userTags = isUser.tags as MongooseSchema.Types.ObjectId[];
         const tagsArr =

@@ -6,6 +6,7 @@ import { TagsModule } from './tags/tags.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
+import { FeedsModule } from './feeds/feeds.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { join } from 'path';
     }),
     UserModule,
     TagsModule,
+    FeedsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
