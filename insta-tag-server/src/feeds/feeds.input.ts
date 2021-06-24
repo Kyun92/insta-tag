@@ -20,6 +20,15 @@ export class UpdateFeedInput {
 
   @Field(() => String)
   content: string;
+}
+
+@InputType()
+export class ListFeedInput {
+  @Field(() => String)
+  _id: MongooseSchema.Types.ObjectId;
+
+  @Field(() => String)
+  contend: string;
 
   @Field(() => String)
   userId: MongooseSchema.Types.ObjectId;

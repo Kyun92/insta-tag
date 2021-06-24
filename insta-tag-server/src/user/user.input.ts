@@ -16,13 +16,16 @@ export class CreateUserInput {
 @InputType()
 export class ListUserInput {
   @Field(() => String)
-  _id: MongooseSchema.Types.ObjectId;
+  _id?: MongooseSchema.Types.ObjectId;
 
   @Field(() => String)
-  email: string;
+  email?: string;
 
   @Field(() => [String], { nullable: true })
   tags?: MongooseSchema.Types.ObjectId[];
+
+  @Field(() => [String], { nullable: true })
+  feeds?: MongooseSchema.Types.ObjectId[];
 }
 
 @InputType()
@@ -32,4 +35,7 @@ export class UpdateUserInput {
 
   @Field(() => [String], { nullable: true })
   tags?: MongooseSchema.Types.ObjectId[];
+
+  @Field(() => [String], { nullable: true })
+  feeds?: MongooseSchema.Types.ObjectId[];
 }

@@ -2,16 +2,35 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateFeedInput {
+  content: String!
+  createdAt: String = "2021-06-24T14:52:10.972Z"
+  userId: String!
+}
+
 input CreateTagInput {
-  createdAt: String = "2021-06-23T08:49:23.856Z"
+  createdAt: String = "2021-06-24T14:52:10.972Z"
   tagList: [String!]!
   userId: String!
 }
 
 input CreateUserInput {
-  createdAt: String = "2021-06-23T08:49:23.856Z"
+  createdAt: String = "2021-06-24T14:52:10.971Z"
   email: String!
   password: String!
+}
+
+type Feeds {
+  _id: String!
+  content: String!
+  createdAt: String!
+  userId: String!
+}
+
+input ListFeedInput {
+  _id: String!
+  contend: String!
+  userId: String!
 }
 
 input ListTagsInput {
@@ -23,22 +42,28 @@ input ListTagsInput {
 input ListUserInput {
   _id: String!
   email: String!
+  feeds: [String!]
   tags: [String!]
 }
 
 type Mutation {
+  createFeed(createFeedInput: CreateFeedInput!): Feeds!
   createTags(createTagsInput: CreateTagInput!): Tags!
   createUser(createUserInput: CreateUserInput!): User!
+  deleteFeed(_id: String!): Feeds!
   deleteTag(_id: String!): Tags!
   login(email: String!, password: String!): String!
+  updateFeed(updateFeedInput: UpdateFeedInput!): Feeds!
   updateTag(updateTagInput: UpdateTagInput!): Tags!
   updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
 type Query {
+  findAllFeeds(filter: ListFeedInput): [Feeds!]!
   findAllTags(filter: ListTagsInput): [Tags!]!
   findAllUsers(filters: ListUserInput): [User!]!
-  getTagsById(userId: String): [Tags!]!
+  getFeedById(feedId: String!): Feeds!
+  getTagsById(tagId: String!): [Tags!]!
   getUserById(_id: String!): User
 }
 
@@ -49,6 +74,11 @@ type Tags {
   userId: String!
 }
 
+input UpdateFeedInput {
+  _id: String!
+  content: String!
+}
+
 input UpdateTagInput {
   _id: String!
   tagList: [String!]!
@@ -56,6 +86,7 @@ input UpdateTagInput {
 
 input UpdateUserInput {
   _id: String!
+  feeds: [String!]
   tags: [String!]
 }
 
@@ -63,6 +94,7 @@ type User {
   _id: String!
   createdAt: String!
   email: String!
+  feeds(populate: Boolean!): [Feeds!]
   password: String!
   tags(populate: Boolean!): [Tags!]
 }

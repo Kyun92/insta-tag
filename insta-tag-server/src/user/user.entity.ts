@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Tags } from 'src/tags/tags.entity';
+import { Feeds } from 'src/feeds/feeds.entity';
 
 @ObjectType()
 @Schema()
@@ -24,6 +25,10 @@ export class User {
   @Field(() => [Tags], { nullable: true })
   @Prop({ type: [MongooseSchema.Types.ObjectId], ref: Tags.name })
   tags?: MongooseSchema.Types.ObjectId[] | Tags[];
+
+  @Field(() => [Feeds], { nullable: true })
+  @Prop({ type: [MongooseSchema.Types.ObjectId], ref: Feeds.name })
+  feeds?: MongooseSchema.Types.ObjectId[] | Feeds[];
 }
 
 export type UserDocument = User & Document;

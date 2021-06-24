@@ -14,25 +14,29 @@ export class TagsService {
   ) {}
 
   async createTags(createTagsInput: CreateTagInput) {
-    const isUser = await this.userService.getUserById(createTagsInput.userId);
+    try {
+      const isUser = await this.userService.getUserById(createTagsInput.userId);
 
-    if (isUser) {
-      const newTag = await new this.tagsModel(createTagsInput);
-      const newTagId = newTag._id as MongooseSchema.Types.ObjectId;
-      //? 이 부분을 UserGuards로 대채할 수 있지 않을까?
-      if (newTagId) {
-        const userTags = isUser.tags as MongooseSchema.Types.ObjectId[];
-        const tagsArr =
-          userTags.length === 0 ? [newTagId] : userTags.concat(newTagId);
+      if (isUser) {
+        const newTag = await new this.tagsModel(createTagsInput);
+        const newTagId = newTag._id as MongooseSchema.Types.ObjectId;
 
-        await this.userService.updateUser(isUser.id, {
-          _id: isUser.id,
-          tags: tagsArr as MongooseSchema.Types.ObjectId[],
-        });
+        if (newTagId) {
+          const userTags = isUser.tags as MongooseSchema.Types.ObjectId[];
+          const tagsArr =
+            userTags.length === 0 ? [newTagId] : userTags.concat(newTagId);
+
+          await this.userService.updateUser(isUser._id, {
+            _id: isUser._id,
+            tags: tagsArr,
+          });
+        }
+        return await newTag.save();
+      } else {
+        throw new GraphQLError('Tag create Fail');
       }
-      return await newTag.save();
-    } else {
-      throw new GraphQLError('No User this _id');
+    } catch (err) {
+      console.error(err);
     }
   }
 
@@ -44,11 +48,11 @@ export class TagsService {
     }
   }
 
-  async getTagsById(userId: MongooseSchema.Types.ObjectId) {
+  async getTagsById(tagId: MongooseSchema.Types.ObjectId) {
     try {
       return await this.tagsModel
         .find({
-          userId: userId,
+          _id: tagId,
         })
         .exec();
     } catch (err) {

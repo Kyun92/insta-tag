@@ -11,12 +11,11 @@ export class Feeds {
 
   @Field(() => String)
   @Prop()
-  contents: string;
+  content: string;
 
-  //? 유저와 의존성을 줄지?
-  @Field(() => User)
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: User.name })
-  user: MongooseSchema.Types.ObjectId | User;
+  @Field(() => String)
+  @Prop()
+  userId: MongooseSchema.Types.ObjectId;
 
   @Field(() => String)
   @Prop()
