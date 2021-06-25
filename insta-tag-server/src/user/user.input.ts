@@ -15,10 +15,10 @@ export class CreateUserInput {
 
 @InputType()
 export class ListUserInput {
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   _id?: MongooseSchema.Types.ObjectId;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   email?: string;
 
   @Field(() => [String], { nullable: true })

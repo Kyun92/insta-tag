@@ -15,14 +15,14 @@ export class CreateTagInput {
 
 @InputType()
 export class ListTagsInput {
-  @Field(() => String)
-  _id: MongooseSchema.Types.ObjectId;
+  @Field(() => String, { nullable: true })
+  _id?: MongooseSchema.Types.ObjectId;
 
-  @Field(() => String)
-  userId: MongooseSchema.Types.ObjectId;
+  @Field(() => String, { nullable: true })
+  userId?: MongooseSchema.Types.ObjectId;
 
-  @Field(() => [String])
-  tagList: string[];
+  @Field(() => [String], { nullable: true })
+  tagList?: string[];
 }
 
 @InputType()

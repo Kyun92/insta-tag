@@ -4,18 +4,18 @@
 
 input CreateFeedInput {
   content: String!
-  createdAt: String = "2021-06-24T14:52:10.972Z"
+  createdAt: String = "2021-06-24T14:57:10.209Z"
   userId: String!
 }
 
 input CreateTagInput {
-  createdAt: String = "2021-06-24T14:52:10.972Z"
+  createdAt: String = "2021-06-24T14:57:10.209Z"
   tagList: [String!]!
   userId: String!
 }
 
 input CreateUserInput {
-  createdAt: String = "2021-06-24T14:52:10.971Z"
+  createdAt: String = "2021-06-24T14:57:10.209Z"
   email: String!
   password: String!
 }

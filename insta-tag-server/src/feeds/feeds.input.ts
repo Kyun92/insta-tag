@@ -24,12 +24,12 @@ export class UpdateFeedInput {
 
 @InputType()
 export class ListFeedInput {
-  @Field(() => String)
-  _id: MongooseSchema.Types.ObjectId;
+  @Field(() => String, { nullable: true })
+  _id?: MongooseSchema.Types.ObjectId;
 
-  @Field(() => String)
-  contend: string;
+  @Field(() => String, { nullable: true })
+  contend?: string;
 
-  @Field(() => String)
-  userId: MongooseSchema.Types.ObjectId;
+  @Field(() => String, { nullable: true })
+  userId?: MongooseSchema.Types.ObjectId;
 }
