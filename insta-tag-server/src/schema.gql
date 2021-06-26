@@ -4,20 +4,32 @@
 
 input CreateFeedInput {
   content: String!
-  createdAt: String = "2021-06-24T14:57:10.209Z"
+  createdAt: String = "2021-06-26T13:59:18.266Z"
   userId: String!
 }
 
 input CreateTagInput {
-  createdAt: String = "2021-06-24T14:57:10.209Z"
+  createdAt: String = "2021-06-26T13:59:18.266Z"
   tagList: [String!]!
   userId: String!
 }
 
 input CreateUserInput {
-  createdAt: String = "2021-06-24T14:57:10.209Z"
+  createdAt: String = "2021-06-26T13:59:18.265Z"
   email: String!
   password: String!
+}
+
+type CreateUserOutput {
+  error: String
+  ok: Boolean!
+}
+
+input FeedInputType {
+  _id: String!
+  content: String!
+  createdAt: String!
+  userId: String!
 }
 
 type Feeds {
@@ -27,44 +39,72 @@ type Feeds {
   userId: String!
 }
 
+input GetAllUserInput {
+  _id: String
+  email: String
+}
+
+type GetAllUserOutput {
+  error: String
+  ok: Boolean!
+  users: [User!]
+}
+
+type GetUserOutput {
+  error: String
+  ok: Boolean!
+  user: User
+}
+
 input ListFeedInput {
-  _id: String!
-  contend: String!
-  userId: String!
+  _id: String
+  contend: String
+  userId: String
 }
 
 input ListTagsInput {
-  _id: String!
-  tagList: [String!]!
-  userId: String!
+  _id: String
+  tagList: [String!]
+  userId: String
 }
 
-input ListUserInput {
-  _id: String!
+input LoginInput {
   email: String!
-  feeds: [String!]
-  tags: [String!]
+  password: String!
+}
+
+type LoginOutput {
+  error: String
+  ok: Boolean!
+  token: String
 }
 
 type Mutation {
   createFeed(createFeedInput: CreateFeedInput!): Feeds!
   createTags(createTagsInput: CreateTagInput!): Tags!
-  createUser(createUserInput: CreateUserInput!): User!
+  createUser(createUserInput: CreateUserInput!): CreateUserOutput!
   deleteFeed(_id: String!): Feeds!
   deleteTag(_id: String!): Tags!
-  login(email: String!, password: String!): String!
+  login(loginInput: LoginInput!): LoginOutput!
   updateFeed(updateFeedInput: UpdateFeedInput!): Feeds!
   updateTag(updateTagInput: UpdateTagInput!): Tags!
-  updateUser(updateUserInput: UpdateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): UpdateUserOutput!
 }
 
 type Query {
   findAllFeeds(filter: ListFeedInput): [Feeds!]!
   findAllTags(filter: ListTagsInput): [Tags!]!
-  findAllUsers(filters: ListUserInput): [User!]!
+  findAllUsers(getAllUserInput: GetAllUserInput): GetAllUserOutput!
   getFeedById(feedId: String!): Feeds!
   getTagsById(tagId: String!): [Tags!]!
-  getUserById(_id: String!): User
+  getUserById(userId: String!): GetUserOutput
+}
+
+input TagInputType {
+  _id: String!
+  createdAt: String!
+  tagList: [String!]!
+  userId: String!
 }
 
 type Tags {
@@ -85,9 +125,13 @@ input UpdateTagInput {
 }
 
 input UpdateUserInput {
-  _id: String!
-  feeds: [String!]
-  tags: [String!]
+  feeds: [FeedInputType!]
+  tags: [TagInputType!]
+}
+
+type UpdateUserOutput {
+  error: String
+  ok: Boolean!
 }
 
 type User {

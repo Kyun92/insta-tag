@@ -1,9 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Tags } from 'src/tags/tags.entity';
 import { Feeds } from 'src/feeds/feeds.entity';
 
+@InputType('UserInputType', { isAbstract: true })
 @ObjectType()
 @Schema()
 export class User {

@@ -6,77 +6,65 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { User, UserDocument } from './user.entity';
-import { CreateUserInput, ListUserInput, UpdateUserInput } from './user.input';
+import { User, UserDocument } from './entities/user.entity';
 import { UserService } from './user.service';
-import { Schema as MongooseSchema } from 'mongoose';
-import { GraphQLError } from 'graphql';
 import { Tags } from 'src/tags/tags.entity';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from './user.guard';
 import { CurrentUser } from './user.decorator';
 import { Feeds } from 'src/feeds/feeds.entity';
+import { CreateUserInput, CreateUserOutput } from './dto/create-user.dto';
+import { UpdateUserInput, UpdateUserOutput } from './dto/update-user.dto';
+import { LoginInput, LoginOutput } from './dto/login.dto';
+import {
+  GetAllUserInput,
+  GetAllUserOutput,
+  GetUserInput,
+  GetUserOutput,
+} from './dto/get-user.dto';
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+  constructor(private userService: UserService) {}
 
   // find All User
-  @Query(() => [User])
+  @Query(() => GetAllUserOutput)
   async findAllUsers(
-    @Args('filters', { nullable: true }) filters?: ListUserInput,
+    @Args('getAllUserInput', { nullable: true })
+    getAllUserInput?: GetAllUserInput,
   ) {
-    return this.userService.findAllUser(filters);
+    return this.userService.findAllUser(getAllUserInput);
   }
 
   // Get By Id
-  @Query(() => User, { nullable: true })
+  @Query(() => GetUserOutput, { nullable: true })
   async getUserById(
-    @Args('_id', { type: () => String })
-    _id: MongooseSchema.Types.ObjectId,
+    @Args('userId', { type: () => String })
+    userId: GetUserInput,
   ) {
-    try {
-      return await this.userService.getUserById(_id);
-    } catch (err) {
-      throw new GraphQLError('User email already exist');
-    }
+    return await this.userService.getUserById(userId);
   }
 
   // Create User
-  @Mutation(() => User)
+  @Mutation(() => CreateUserOutput)
   async createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    try {
-      return await this.userService.createUser(createUserInput);
-    } catch (err) {
-      console.error(err);
-    }
+    return await this.userService.createUser(createUserInput);
   }
 
   // Login
-  @Mutation(() => String)
-  async login(
-    @Args('email') email: string,
-    @Args('password') password: string,
-  ) {
-    try {
-      return await this.userService.login({ email, password });
-    } catch (err) {
-      console.error(err);
-    }
+  @Mutation(() => LoginOutput)
+  async login(@Args('loginInput') loginInput: LoginInput) {
+    return await this.userService.login(loginInput);
   }
 
   // Update User
-  @Mutation(() => User)
+  @Mutation(() => UpdateUserOutput)
   @UseGuards(GqlAuthGuard)
   async updateUser(
     @CurrentUser() user: User,
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
   ) {
-    try {
-      return await this.userService.updateUser(user._id, updateUserInput);
-    } catch (err) {
-      console.error(err);
-    }
+    return await this.userService.updateUser(user._id, updateUserInput);
   }
 
   @ResolveField()

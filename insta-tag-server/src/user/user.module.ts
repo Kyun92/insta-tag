@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema, User } from './user.entity';
+import { UserSchema, User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { UserResolver } from './user.resolver';
 import { JwtModule } from '@nestjs/jwt';

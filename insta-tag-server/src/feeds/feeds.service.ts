@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { GraphQLError } from 'graphql';
 import { Model, Schema as MongooseSchema } from 'mongoose';
+import { UserDocument } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Feeds, FeedsDocument } from './feeds.entity';
 import { CreateFeedInput, UpdateFeedInput, ListFeedInput } from './feeds.input';
@@ -39,18 +40,20 @@ export class FeedsService {
   // create
   async createFeed(createFeedInput: CreateFeedInput) {
     try {
-      const isUser = await this.userService.getUserById(createFeedInput.userId);
-      if (isUser) {
+      const isUser = await this.userService.getUserById({
+        userId: createFeedInput.userId,
+      });
+      if (isUser.ok) {
         const newFeed = await new this.feedsModel(createFeedInput);
         const newFeedId = newFeed._id as MongooseSchema.Types.ObjectId;
 
         if (newFeedId) {
-          const userFeeds = isUser.feeds as MongooseSchema.Types.ObjectId[];
+          const userFeeds = isUser.user
+            .feeds as MongooseSchema.Types.ObjectId[];
           const feedArr =
             userFeeds.length === 0 ? [newFeedId] : userFeeds.concat(newFeedId);
 
-          await this.userService.updateUser(isUser._id, {
-            _id: isUser._id,
+          await this.userService.updateUser(isUser.user._id, {
             feeds: feedArr,
           });
         }

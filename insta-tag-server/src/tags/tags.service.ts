@@ -15,19 +15,20 @@ export class TagsService {
 
   async createTags(createTagsInput: CreateTagInput) {
     try {
-      const isUser = await this.userService.getUserById(createTagsInput.userId);
+      const isUser = await this.userService.getUserById({
+        userId: createTagsInput.userId,
+      });
 
-      if (isUser) {
+      if (isUser.ok) {
         const newTag = await new this.tagsModel(createTagsInput);
         const newTagId = newTag._id as MongooseSchema.Types.ObjectId;
 
         if (newTagId) {
-          const userTags = isUser.tags as MongooseSchema.Types.ObjectId[];
+          const userTags = isUser.user.tags as MongooseSchema.Types.ObjectId[];
           const tagsArr =
             userTags.length === 0 ? [newTagId] : userTags.concat(newTagId);
 
-          await this.userService.updateUser(isUser._id, {
-            _id: isUser._id,
+          await this.userService.updateUser(isUser.user._id, {
             tags: tagsArr,
           });
         }
