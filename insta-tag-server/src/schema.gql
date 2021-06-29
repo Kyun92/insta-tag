@@ -4,18 +4,23 @@
 
 input CreateFeedInput {
   content: String!
-  createdAt: String = "2021-06-26T13:59:18.266Z"
+  createdAt: String = "2021-06-28T04:26:32.509Z"
   userId: String!
 }
 
-input CreateTagInput {
-  createdAt: String = "2021-06-26T13:59:18.266Z"
-  tagList: [String!]!
-  userId: String!
+input CreateTagsInput {
+  createdAt: String = "2021-06-28T04:26:32.509Z"
+  tagList: [String!]
+  userId: String
+}
+
+type CreateTagsOutput {
+  error: String
+  ok: Boolean!
 }
 
 input CreateUserInput {
-  createdAt: String = "2021-06-26T13:59:18.265Z"
+  createdAt: String = "2021-06-28T04:26:32.509Z"
   email: String!
   password: String!
 }
@@ -81,7 +86,7 @@ type LoginOutput {
 
 type Mutation {
   createFeed(createFeedInput: CreateFeedInput!): Feeds!
-  createTags(createTagsInput: CreateTagInput!): Tags!
+  createTags(createTagsInput: CreateTagsInput!): CreateTagsOutput!
   createUser(createUserInput: CreateUserInput!): CreateUserOutput!
   deleteFeed(_id: String!): Feeds!
   deleteTag(_id: String!): Tags!

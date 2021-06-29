@@ -9,7 +9,7 @@ import {
 import { CoreOutput } from 'src/common/output.dto';
 import { User } from '../entities/user.entity';
 import { Schema as MongooseSchema } from 'mongoose';
-import { Tags } from 'src/tags/tags.entity';
+import { Tags } from 'src/tags/entities/tags.entity';
 import { Feeds } from 'src/feeds/feeds.entity';
 
 // ? GraphQLError [Object]: Type GetUser must define one or more fields.

@@ -8,7 +8,7 @@ import {
 } from '@nestjs/graphql';
 import { User, UserDocument } from './entities/user.entity';
 import { UserService } from './user.service';
-import { Tags } from 'src/tags/tags.entity';
+import { Tags } from 'src/tags/entities/tags.entity';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from './user.guard';
 import { CurrentUser } from './user.decorator';

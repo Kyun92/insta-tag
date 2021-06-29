@@ -1,10 +1,13 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Tags } from './tags.entity';
-import { CreateTagInput, ListTagsInput, UpdateTagInput } from './tags.input';
+import { Tags } from './entities/tags.entity';
+import { ListTagsInput, UpdateTagInput } from './dto/tags.input';
 import { TagsService } from './tags.service';
 import { Schema as MongooseSchema } from 'mongoose';
 import { GqlAuthGuard } from 'src/user/user.guard';
 import { UseGuards } from '@nestjs/common';
+import { CreateTagsInput, CreateTagsOutput } from './dto/create-tags.dto';
+import { CurrentUser } from 'src/user/user.decorator';
+import { User } from 'src/user/entities/user.entity';
 
 @Resolver(() => Tags)
 export class TagsResolver {
@@ -25,10 +28,16 @@ export class TagsResolver {
   }
 
   // Create Tags
-  @Mutation(() => Tags)
+  @Mutation(() => CreateTagsOutput)
   @UseGuards(GqlAuthGuard)
-  async createTags(@Args('createTagsInput') createTagsInput: CreateTagInput) {
-    return await this.tagsService.createTags(createTagsInput);
+  async createTags(
+    @CurrentUser() user: User,
+    @Args('createTagsInput') createTagsInput: CreateTagsInput,
+  ) {
+    return await this.tagsService.createTags({
+      userId: user._id,
+      ...createTagsInput,
+    });
   }
 
   // Update Tag

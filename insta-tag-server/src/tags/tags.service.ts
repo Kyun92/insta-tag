@@ -2,42 +2,58 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { GraphQLError } from 'graphql';
 import { Model, Schema as MongooseSchema } from 'mongoose';
+import { User, UserDocument } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
-import { Tags, TagsDocument } from './tags.entity';
-import { CreateTagInput, ListTagsInput, UpdateTagInput } from './tags.input';
+import { CreateTagsInput, CreateTagsOutput } from './dto/create-tags.dto';
+import { ListTagsInput, UpdateTagInput } from './dto/tags.input';
+import { Tags, TagsDocument } from './entities/tags.entity';
 
 @Injectable()
 export class TagsService {
   constructor(
     @InjectModel(Tags.name) private tagsModel: Model<TagsDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
     private userService: UserService,
   ) {}
 
-  async createTags(createTagsInput: CreateTagInput) {
+  async createTags(
+    createTagsInput: CreateTagsInput,
+  ): Promise<CreateTagsOutput> {
     try {
-      const isUser = await this.userService.getUserById({
-        userId: createTagsInput.userId,
-      });
+      // ? 왜 이건 안불러지는건데?
+      // const isUser = await this.userService.getUserById({
+      //   userId: createTagsInput.userId,
+      // });
+      const isUser = await this.userModel.findById(createTagsInput.userId);
 
-      if (isUser.ok) {
+      if (isUser) {
         const newTag = await new this.tagsModel(createTagsInput);
         const newTagId = newTag._id as MongooseSchema.Types.ObjectId;
 
         if (newTagId) {
-          const userTags = isUser.user.tags as MongooseSchema.Types.ObjectId[];
+          const userTags = isUser.tags as MongooseSchema.Types.ObjectId[];
           const tagsArr =
             userTags.length === 0 ? [newTagId] : userTags.concat(newTagId);
 
-          await this.userService.updateUser(isUser.user._id, {
+          await this.userService.updateUser(isUser._id, {
             tags: tagsArr,
           });
         }
-        return await newTag.save();
+        await newTag.save();
+        return {
+          ok: true,
+        };
       } else {
-        throw new GraphQLError('Tag create Fail');
+        return {
+          ok: false,
+          error: 'User not Found',
+        };
       }
     } catch (err) {
-      console.error(err);
+      return {
+        ok: false,
+        error: 'Could not create tags',
+      };
     }
   }
 
