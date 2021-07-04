@@ -1,6 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Tags } from './entities/tags.entity';
-import { ListTagsInput, UpdateTagInput } from './dto/tags.input';
 import { TagsService } from './tags.service';
 import { Schema as MongooseSchema } from 'mongoose';
 import { GqlAuthGuard } from 'src/user/user.guard';
@@ -8,23 +7,33 @@ import { UseGuards } from '@nestjs/common';
 import { CreateTagsInput, CreateTagsOutput } from './dto/create-tags.dto';
 import { CurrentUser } from 'src/user/user.decorator';
 import { User } from 'src/user/entities/user.entity';
+import {
+  GetAllTagInput,
+  GetAllTagsOutput,
+  GetTagInput,
+  GetTagsOutput,
+} from './dto/get-tags.dto';
+import { UpdateTagInput, UpdateTagOutput } from './dto/update-tag.dto';
+import { DeleteTagInput, DeleteTagOutput } from './dto/delete-tags.dto';
 
 @Resolver(() => Tags)
 export class TagsResolver {
   constructor(private tagsService: TagsService) {}
 
-  @Query(() => [Tags])
-  async findAllTags(@Args('filter', { nullable: true }) filter: ListTagsInput) {
-    return await this.tagsService.findALlTags({ ...filter });
+  @Query(() => GetAllTagsOutput)
+  async findAllTags(
+    @Args('getAllTagInput', { nullable: true }) getAllTagInput: GetAllTagInput,
+  ) {
+    return await this.tagsService.findALlTags({ ...getAllTagInput });
   }
 
   // Get Tag by Id
-  @Query(() => [Tags])
+  @Query(() => GetTagsOutput)
   async getTagsById(
-    @Args('tagId', { type: () => String })
-    tagId: MongooseSchema.Types.ObjectId,
+    @Args('getTagInput')
+    getTagInput: GetTagInput,
   ) {
-    return await this.tagsService.getTagsById(tagId);
+    return await this.tagsService.getTagsById(getTagInput);
   }
 
   // Create Tags
@@ -41,18 +50,16 @@ export class TagsResolver {
   }
 
   // Update Tag
-  @Mutation(() => Tags)
+  @Mutation(() => UpdateTagOutput)
   @UseGuards(GqlAuthGuard)
   async updateTag(@Args('updateTagInput') updateTagInput: UpdateTagInput) {
     return await this.tagsService.updateTag(updateTagInput);
   }
 
   // Delete Tag
-  @Mutation(() => Tags)
+  @Mutation(() => DeleteTagOutput)
   @UseGuards(GqlAuthGuard)
-  async deleteTag(
-    @Args('_id', { type: () => String }) _id: MongooseSchema.Types.ObjectId,
-  ) {
-    return await this.tagsService.deleteTag(_id);
+  async deleteTag(@Args('deleteTagInput') deleteTagInput: DeleteTagInput) {
+    return await this.tagsService.deleteTag(deleteTagInput);
   }
 }

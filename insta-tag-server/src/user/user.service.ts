@@ -38,8 +38,9 @@ export class UserService {
     }
   }
 
-  async getUserById(userId: GetUserInput): Promise<GetUserOutput> {
+  async getUserById({ userId }: GetUserInput): Promise<GetUserOutput> {
     try {
+      console.log(userId);
       const user = await this.userModel.findById(userId).exec();
 
       return {

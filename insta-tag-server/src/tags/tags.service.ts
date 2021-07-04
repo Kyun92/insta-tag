@@ -2,10 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { GraphQLError } from 'graphql';
 import { Model, Schema as MongooseSchema } from 'mongoose';
+import { GetAllUserInput } from 'src/user/dto/get-user.dto';
 import { User, UserDocument } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { CreateTagsInput, CreateTagsOutput } from './dto/create-tags.dto';
-import { ListTagsInput, UpdateTagInput } from './dto/tags.input';
+import { DeleteTagInput } from './dto/delete-tags.dto';
+import {
+  GetAllTagsOutput,
+  GetTagInput,
+  GetTagsOutput,
+} from './dto/get-tags.dto';
+import { UpdateTagInput, UpdateTagOutput } from './dto/update-tag.dto';
 import { Tags, TagsDocument } from './entities/tags.entity';
 
 @Injectable()
@@ -20,22 +27,20 @@ export class TagsService {
     createTagsInput: CreateTagsInput,
   ): Promise<CreateTagsOutput> {
     try {
-      // ? 왜 이건 안불러지는건데?
-      // const isUser = await this.userService.getUserById({
-      //   userId: createTagsInput.userId,
-      // });
-      const isUser = await this.userModel.findById(createTagsInput.userId);
+      const isUser = await this.userService.getUserById({
+        userId: createTagsInput.userId,
+      });
 
-      if (isUser) {
+      if (isUser.ok) {
         const newTag = await new this.tagsModel(createTagsInput);
         const newTagId = newTag._id as MongooseSchema.Types.ObjectId;
 
         if (newTagId) {
-          const userTags = isUser.tags as MongooseSchema.Types.ObjectId[];
+          const userTags = isUser.user.tags as MongooseSchema.Types.ObjectId[];
           const tagsArr =
             userTags.length === 0 ? [newTagId] : userTags.concat(newTagId);
 
-          await this.userService.updateUser(isUser._id, {
+          await this.userService.updateUser(isUser.user._id, {
             tags: tagsArr,
           });
         }
@@ -57,49 +62,83 @@ export class TagsService {
     }
   }
 
-  async findALlTags(filter: ListTagsInput) {
+  async findALlTags(
+    getAllTagInput?: GetAllUserInput,
+  ): Promise<GetAllTagsOutput> {
     try {
-      return await this.tagsModel.find({ ...filter }).exec();
+      const tags = await this.tagsModel.find({ ...getAllTagInput }).exec();
+
+      return {
+        ok: true,
+        tags,
+      };
     } catch (err) {
-      console.error(err);
+      return {
+        ok: false,
+        error: 'Could not find tags',
+      };
     }
   }
 
-  async getTagsById(tagId: MongooseSchema.Types.ObjectId) {
+  async getTagsById(getTagInput: GetTagInput): Promise<GetTagsOutput> {
     try {
-      return await this.tagsModel
-        .find({
-          _id: tagId,
+      const tag = await this.tagsModel
+        .findById({
+          _id: getTagInput._id,
         })
         .exec();
+
+      return {
+        ok: true,
+        tag: tag,
+      };
     } catch (err) {
-      console.error(err);
+      return {
+        ok: false,
+        error: 'Could not found tag by Id',
+      };
     }
   }
 
-  async updateTag(updateTagInput: UpdateTagInput) {
+  async updateTag(updateTagInput: UpdateTagInput): Promise<UpdateTagOutput> {
     try {
       const isTag = await this.tagsModel.findOne({
         _id: updateTagInput._id,
       });
 
       if (isTag) {
-        return await this.tagsModel
+        await this.tagsModel
           .findByIdAndUpdate(updateTagInput._id, updateTagInput, { new: true })
           .exec();
+
+        return {
+          ok: true,
+        };
       } else {
-        throw new GraphQLError('No Tag this _id');
+        return {
+          ok: false,
+          error: 'Could not found Tag by Id',
+        };
       }
     } catch (err) {
-      throw new GraphQLError('No Tag this _id');
+      return {
+        ok: false,
+        error: 'Coulud not Update Tag',
+      };
     }
   }
 
-  async deleteTag(_id: MongooseSchema.Types.ObjectId) {
+  async deleteTag(deleteTagInput: DeleteTagInput) {
     try {
-      return await this.tagsModel.findByIdAndDelete(_id).exec();
+      await this.tagsModel.findByIdAndDelete(deleteTagInput._id).exec();
+      return {
+        ok: true,
+      };
     } catch (err) {
-      console.error(err);
+      return {
+        ok: false,
+        error: 'Could not delete Tag by Id',
+      };
     }
   }
 }

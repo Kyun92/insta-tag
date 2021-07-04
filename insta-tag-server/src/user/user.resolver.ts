@@ -39,10 +39,10 @@ export class UserResolver {
   // Get By Id
   @Query(() => GetUserOutput, { nullable: true })
   async getUserById(
-    @Args('userId', { type: () => String })
-    userId: GetUserInput,
+    @Args('getUserInput')
+    getUserInput: GetUserInput,
   ) {
-    return await this.userService.getUserById(userId);
+    return await this.userService.getUserById(getUserInput);
   }
 
   // Create User

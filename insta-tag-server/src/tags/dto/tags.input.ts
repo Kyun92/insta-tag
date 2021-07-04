@@ -13,23 +13,23 @@ import { Schema as MongooseSchema } from 'mongoose';
 //   createdAt: string = new Date().toISOString();
 // }
 
-@InputType()
-export class ListTagsInput {
-  @Field(() => String, { nullable: true })
-  _id?: MongooseSchema.Types.ObjectId;
+// @InputType()
+// export class ListTagsInput {
+//   @Field(() => String, { nullable: true })
+//   _id?: MongooseSchema.Types.ObjectId;
 
-  @Field(() => String, { nullable: true })
-  userId?: MongooseSchema.Types.ObjectId;
+//   @Field(() => String, { nullable: true })
+//   userId?: MongooseSchema.Types.ObjectId;
 
-  @Field(() => [String], { nullable: true })
-  tagList?: string[];
-}
+//   @Field(() => [String], { nullable: true })
+//   tagList?: string[];
+// }
 
-@InputType()
-export class UpdateTagInput {
-  @Field(() => String)
-  _id: MongooseSchema.Types.ObjectId;
+// @InputType()
+// export class UpdateTagInput {
+//   @Field(() => String)
+//   _id: MongooseSchema.Types.ObjectId;
 
-  @Field(() => [String])
-  tagList: string[];
-}
+//   @Field(() => [String])
+//   tagList: string[];
+// }
