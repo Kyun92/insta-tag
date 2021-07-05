@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { GraphQLError } from 'graphql';
 import { Model, Schema as MongooseSchema } from 'mongoose';
 import { GetAllUserInput } from 'src/user/dto/get-user.dto';
 import { User, UserDocument } from 'src/user/entities/user.entity';
@@ -19,7 +18,6 @@ import { Tags, TagsDocument } from './entities/tags.entity';
 export class TagsService {
   constructor(
     @InjectModel(Tags.name) private tagsModel: Model<TagsDocument>,
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
     private userService: UserService,
   ) {}
 
@@ -32,15 +30,16 @@ export class TagsService {
       });
 
       if (isUser.ok) {
+        const { user } = isUser;
         const newTag = await new this.tagsModel(createTagsInput);
         const newTagId = newTag._id as MongooseSchema.Types.ObjectId;
 
         if (newTagId) {
-          const userTags = isUser.user.tags as MongooseSchema.Types.ObjectId[];
+          const userTags = user.tags as MongooseSchema.Types.ObjectId[];
           const tagsArr =
             userTags.length === 0 ? [newTagId] : userTags.concat(newTagId);
 
-          await this.userService.updateUser(isUser.user._id, {
+          await this.userService.updateUser(user._id, {
             tags: tagsArr,
           });
         }

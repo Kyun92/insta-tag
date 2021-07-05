@@ -1,10 +1,8 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Tags } from './entities/tags.entity';
 import { TagsService } from './tags.service';
-import { Schema as MongooseSchema } from 'mongoose';
 import { GqlAuthGuard } from 'src/user/user.guard';
 import { UseGuards } from '@nestjs/common';
-import { CreateTagsInput, CreateTagsOutput } from './dto/create-tags.dto';
 import { CurrentUser } from 'src/user/user.decorator';
 import { User } from 'src/user/entities/user.entity';
 import {
@@ -13,6 +11,7 @@ import {
   GetTagInput,
   GetTagsOutput,
 } from './dto/get-tags.dto';
+import { CreateTagsInput, CreateTagsOutput } from './dto/create-tags.dto';
 import { UpdateTagInput, UpdateTagOutput } from './dto/update-tag.dto';
 import { DeleteTagInput, DeleteTagOutput } from './dto/delete-tags.dto';
 

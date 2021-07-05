@@ -12,7 +12,7 @@ import { Tags } from 'src/tags/entities/tags.entity';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from './user.guard';
 import { CurrentUser } from './user.decorator';
-import { Feeds } from 'src/feeds/feeds.entity';
+import { Feeds } from 'src/feeds/entities/feeds.entity';
 import { CreateUserInput, CreateUserOutput } from './dto/create-user.dto';
 import { UpdateUserInput, UpdateUserOutput } from './dto/update-user.dto';
 import { LoginInput, LoginOutput } from './dto/login.dto';
